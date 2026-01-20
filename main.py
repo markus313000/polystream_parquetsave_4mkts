@@ -5,11 +5,13 @@ import threading
 from collections import defaultdict
 from parquet import ParquetWriter, get_new_parquet_filename
 from ws import WebSocketOrderBook
-from getmkts import get_15m_events, load_tokens_for_condition
+from getmkts import get_window_events, load_tokens_for_condition
 
 ASSETS = ["Bitcoin", "Ethereum", "Solana", "XRP"]  # Track multiple assets
+Timeframe = "15m" # 15m, 5m (can implement hourly but need to change name processing in getmkts)
 
-def main(assets=ASSETS):
+
+def main(assets=ASSETS, window = Timeframe):
     wsconnections = {}
     current_events = {}
     asset_events = {}  # Cache events
@@ -27,7 +29,7 @@ def main(assets=ASSETS):
                     (now - last_refresh[asset]).total_seconds() >= REFRESH_INTERVAL):
                     
                     print(f"[REFRESH] Fetching new events for {asset}")
-                    asset_events[asset] = get_15m_events(asset)
+                    asset_events[asset] = get_window_events(asset, window)
                     last_refresh[asset] = now
                 
                 # Use cached events
@@ -70,7 +72,7 @@ def main(assets=ASSETS):
                             name=f"ws-{asset}"
                         ).start()
                     else:
-                        print(f"[{now}] [{asset}] No active 15m market right now.")
+                        print(f"[{now}] [{asset}] No active market right now.")
 
             # Check every second for new events
             time.sleep(1)

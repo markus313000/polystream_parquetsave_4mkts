@@ -8,10 +8,21 @@ from py_clob_client.client import ClobClient
 
 GAMMA_API_BASE = "https://gamma-api.polymarket.com"
 
-def get_15m_events(asset, tag=102467, limit=100):
+def get_window_events(asset, window, limit=2):
     url = f"{GAMMA_API_BASE}/events"
     eight_days_ago = datetime.now(timezone.utc) - timedelta(days=8)
     today_str = eight_days_ago.strftime("%Y-%m-%d")
+    tag = None
+
+    if window == "1h":
+        tag = 102175
+    elif window == "15m":
+        tag = 102467
+    elif window == "5m":
+        tag = 102892
+    else:
+        print("Not a minute window market.")
+
     params = {
         "closed": "false",
         "start_date_min": today_str,
@@ -37,6 +48,7 @@ def get_15m_events(asset, tag=102467, limit=100):
 
         _, time_part = title.rsplit(" - ", 1)
         time_part = time_part.replace(" ET", "")
+
 
         # separate date and time range
         date_str, time_range = time_part.split(", ")
@@ -90,9 +102,8 @@ def get_15m_events(asset, tag=102467, limit=100):
         for asset_name in ASSETS:
             if asset_name in event.name:
                 asset_events[asset_name].append(event)
-                break
-    #print(asset_events)
-
+                break    
+    #print(asset_events[asset])
     return asset_events[asset]
 
 def load_tokens_for_condition(condition_id):
@@ -109,3 +120,5 @@ def load_tokens_for_condition(condition_id):
     token_ids = [t["token_id"] for t in tokens]
     #print(f"Loaded token IDs: {token_ids}")
     return token_ids
+
+#get_window_events("Bitcoin", window="5m")
