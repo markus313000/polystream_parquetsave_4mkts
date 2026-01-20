@@ -8,7 +8,7 @@ from py_clob_client.client import ClobClient
 
 GAMMA_API_BASE = "https://gamma-api.polymarket.com"
 
-def get_window_events(asset, window, limit=2):
+def get_window_events(asset, window, limit=100):
     url = f"{GAMMA_API_BASE}/events"
     eight_days_ago = datetime.now(timezone.utc) - timedelta(days=8)
     today_str = eight_days_ago.strftime("%Y-%m-%d")
@@ -85,6 +85,7 @@ def get_window_events(asset, window, limit=2):
         )
 
         events.append(ev)
+        #print(events)
 
     ASSETS = {
     "Bitcoin": "Bitcoin",
@@ -121,4 +122,4 @@ def load_tokens_for_condition(condition_id):
     #print(f"Loaded token IDs: {token_ids}")
     return token_ids
 
-#get_window_events("Bitcoin", window="5m")
+#get_window_events("Bitcoin", window="15m")
