@@ -18,7 +18,7 @@ def main(assets=ASSETS, window=Timeframe):
     last_refresh = {}  # Track when we last refreshed
     
     REFRESH_INTERVAL = 299  # Refresh events every 5 minutes - 1 second
-    RECONNECT_DELAY = 5  # Wait 5 seconds before reconnecting
+    RECONNECT_DELAY = 0.5  # Wait 0.5 seconds before reconnecting
 
     try:
         while True:
